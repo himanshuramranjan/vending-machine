@@ -1,5 +1,6 @@
 package states;
 
+import enums.Note;
 import models.Product;
 
 public interface VendingMachineStates {
