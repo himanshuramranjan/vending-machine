@@ -22,7 +22,7 @@ public class Inventory {
         return inventory;
     }
 
-    public void refillProduct(int shelfCode, int quantity) {
+    public void refillProduct(int shelfCode, int quantity) throws ProductNotFoundException {
         if(!shelves.containsKey(shelfCode)) {
             throw new ProductNotFoundException("Product not found !!!");
         } else {
@@ -31,7 +31,7 @@ public class Inventory {
         }
     }
 
-    public void addProduct(Product product, int shelfCode, int quantity) {
+    public void addProduct(Product product, int shelfCode, int quantity) throws DuplicateShelfCodeException {
         if(shelves.containsKey(shelfCode)) {
             throw new DuplicateShelfCodeException("Product Shelf occupied with other Product, use different shef code");
         } else {
@@ -39,7 +39,7 @@ public class Inventory {
         }
     }
 
-    public Product getProduct(int shelfCode) {
+    public Product getProduct(int shelfCode) throws Exception {
         if(!shelves.containsKey(shelfCode)) {
             throw new ProductNotFoundException("Product is not present on the Shelf");
         } else {
