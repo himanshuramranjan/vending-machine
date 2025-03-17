@@ -4,6 +4,8 @@ import enums.Note;
 import models.Product;
 import models.VendingMachine;
 
+import java.util.List;
+
 public class IdleState implements VendingMachineState {
 
     private final VendingMachine vendingMachine;
@@ -19,7 +21,7 @@ public class IdleState implements VendingMachineState {
     }
 
     @Override
-    public void insertNote(Note note) {
+    public void insertNote(List<Note> notes) {
         System.out.println("Please select the product first");
     }
 
