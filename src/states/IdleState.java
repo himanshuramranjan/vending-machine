@@ -15,8 +15,8 @@ public class IdleState implements VendingMachineState {
     }
 
     @Override
-    public void selectProducts(int productCode) throws Exception {
-        Product product = vendingMachine.getInventory().getProduct(productCode);
+    public void selectProduct(int productCode) throws Exception {
+        vendingMachine.setProductCode(productCode);
         vendingMachine.setState(new PaymentState(vendingMachine));
     }
 
