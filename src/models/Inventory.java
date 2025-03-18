@@ -45,9 +45,13 @@ public class Inventory {
         } else {
             ProductShelf shelf = shelves.get(shelfCode);
             if(shelf.getQuantity() == 0) throw new Exception("Sorry, Product is sold out");
-            shelf.setQuantity(shelf.getQuantity() - 1);
 
             return shelf.getProduct();
         }
+    }
+
+    public void dispenseProduct(int shelfCode) {
+        ProductShelf shelf = shelves.get(shelfCode);
+        shelf.setQuantity(shelf.getQuantity() - 1);
     }
 }
