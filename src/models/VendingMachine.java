@@ -5,7 +5,9 @@ import states.IdleState;
 import states.VendingMachineState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VendingMachine {
 
@@ -13,12 +15,33 @@ public class VendingMachine {
 
     private VendingMachineState state;
     private final Inventory inventory;
-    private final List<Note> notes;
+    private final Map<Note, Integer> notes;
+    private int productCode;
+
+    private int totalAmount;
 
     private VendingMachine() {
-        state = new IdleState();
+        state = new IdleState(this);
         inventory = Inventory.getInstance();
-        notes = new ArrayList<>();
+        notes = new HashMap<>();
+        productCode = -1;
+        totalAmount = 0;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(int productCode) {
+        this.productCode = productCode;
     }
 
     public static VendingMachine getInstance() {
@@ -40,8 +63,14 @@ public class VendingMachine {
         return inventory;
     }
 
-    public List<Note> getNotes() {
+    public Map<Note, Integer> getNotes() {
         return notes;
+    }
+
+    public void addNotes(List<Note> notes) {
+        for(Note note : notes) {
+            this.notes.put(note, this.notes.getOrDefault(note, 0) + 1);
+        }
     }
 
     public VendingMachineState getState() {
@@ -50,5 +79,10 @@ public class VendingMachine {
 
     public void setState(VendingMachineState state) {
         this.state = state;
+    }
+
+    public void resetVendingMachine() {
+        this.productCode = -1;
+        this.totalAmount = 0;
     }
 }
