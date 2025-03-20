@@ -22,12 +22,15 @@ public class PaymentState implements VendingMachineState{
     public void insertNote(List<Note> notes) throws Exception {
         vendingMachine.addNotes(notes);
         int totalAmount = 0;
-        for(Note note : notes) totalAmount += note.getValue();
+        for(Note note : this.vendingMachine.getNotes().keySet()) totalAmount += (note.getValue() * this.vendingMachine.getNotes().get(note));
         boolean isPaymentSuccess = checkPaymentStatus(totalAmount);
 
         if(isPaymentSuccess) {
             vendingMachine.setTotalAmount(totalAmount);
             vendingMachine.setState(new DispenseState(vendingMachine));
+        } else {
+            System.out.println("Amount is not enough please insert more money");
+            vendingMachine.setState(new PaymentState(vendingMachine));
         }
     }
 

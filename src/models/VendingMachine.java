@@ -4,7 +4,6 @@ import enums.Note;
 import states.IdleState;
 import states.VendingMachineState;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,5 +83,6 @@ public class VendingMachine {
     public void resetVendingMachine() {
         this.productCode = -1;
         this.totalAmount = 0;
+        this.notes.clear();
     }
 }
