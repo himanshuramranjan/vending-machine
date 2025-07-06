@@ -3,6 +3,7 @@ import exceptions.DuplicateShelfCodeException;
 import exceptions.ProductNotFoundException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 public class Inventory {
 
@@ -40,18 +41,17 @@ public class Inventory {
     }
 
     public Product getProduct(int shelfCode) throws Exception {
-        if(!shelves.containsKey(shelfCode)) {
-            throw new ProductNotFoundException("Product is not present on the Shelf");
-        } else {
-            ProductShelf shelf = shelves.get(shelfCode);
-            if(shelf.getQuantity() == 0) throw new Exception("Sorry, Product is sold out");
+        ProductShelf shelf = shelves.get(shelfCode);
+        if(shelf.getQuantity() == 0) throw new Exception("Sorry, Product is sold out");
 
-            return shelf.getProduct();
-        }
+        return shelf.getProduct();
     }
 
-    public void dispenseProduct(int shelfCode) {
-        ProductShelf shelf = shelves.get(shelfCode);
-        shelf.setQuantity(shelf.getQuantity() - 1);
+    public void dispenseProducts(List<Integer> shelfCodes) {
+        for(int shelfCode : shelfCodes) {
+            System.out.println("Dispensing : " + shelves.get(shelfCode).getProduct().getName());
+            ProductShelf shelf = shelves.get(shelfCode);
+            shelf.setQuantity(shelf.getQuantity() - 1);
+        }
     }
 }

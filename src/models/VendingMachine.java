@@ -1,12 +1,11 @@
 package models;
 
-import enums.Note;
-import states.IdleState;
-import states.VendingMachineState;
+import service.PaymentManager;
+import service.states.IdleState;
+import service.states.VendingMachineState;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class VendingMachine {
 
@@ -14,33 +13,35 @@ public class VendingMachine {
 
     private VendingMachineState state;
     private final Inventory inventory;
-    private final Map<Note, Integer> notes;
-    private int productCode;
-
-    private int totalAmount;
+    private final PaymentManager paymentManager;
+    private List<Integer> selectedProducts;
+    private int totalBillAmount;
+    private int providedAmount;
 
     private VendingMachine() {
         state = new IdleState(this);
         inventory = Inventory.getInstance();
-        notes = new HashMap<>();
-        productCode = -1;
-        totalAmount = 0;
+        paymentManager = PaymentManager.getInstance();
+        selectedProducts = new ArrayList<>();
+        totalBillAmount = 0;
+        providedAmount = 0;
     }
 
-    public int getTotalAmount() {
-        return totalAmount;
+    public int getTotalBillAmount() {
+        return totalBillAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setTotalBillAmount(int totalBillAmount) {
+        this.totalBillAmount = totalBillAmount;
     }
 
-    public int getProductCode() {
-        return productCode;
+    public List<Integer> getSelectedProducts() {
+        return selectedProducts;
     }
 
-    public void setProductCode(int productCode) {
-        this.productCode = productCode;
+    public void setSelectedProducts(List<Integer> selectedProducts) throws Exception {
+        this.selectedProducts = selectedProducts;
+        calculateTotalAmount();
     }
 
     public static VendingMachine getInstance() {
@@ -62,16 +63,6 @@ public class VendingMachine {
         return inventory;
     }
 
-    public Map<Note, Integer> getNotes() {
-        return notes;
-    }
-
-    public void addNotes(List<Note> notes) {
-        for(Note note : notes) {
-            this.notes.put(note, this.notes.getOrDefault(note, 0) + 1);
-        }
-    }
-
     public VendingMachineState getState() {
         return state;
     }
@@ -80,9 +71,27 @@ public class VendingMachine {
         this.state = state;
     }
 
+    public PaymentManager getPaymentManager() {
+        return paymentManager;
+    }
+
+    public int getProvidedAmount() {
+        return providedAmount;
+    }
+
+    public void setProvidedAmount(int providedAmount) {
+        this.providedAmount += providedAmount;
+    }
+
     public void resetVendingMachine() {
-        this.productCode = -1;
-        this.totalAmount = 0;
-        this.notes.clear();
+        this.selectedProducts = new ArrayList<>();
+        this.totalBillAmount = 0;
+        this.providedAmount = 0;
+    }
+
+    private void calculateTotalAmount() throws Exception {
+        for(int product : selectedProducts) {
+            totalBillAmount += inventory.getProduct(product).getPrice();
+        }
     }
 }
