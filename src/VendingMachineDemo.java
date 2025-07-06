@@ -1,14 +1,24 @@
 import enums.Note;
-import exceptions.DuplicateShelfCodeException;
 import models.Product;
 import models.VendingMachine;
+import service.PaymentManager;
 
 import java.util.List;
+import java.util.Map;
 
 public class VendingMachineDemo {
     public static void main(String[] args) throws Exception {
 
         VendingMachine vendingMachine = VendingMachine.getInstance();
+        PaymentManager paymentManager = PaymentManager.getInstance();
+
+        // Add cash to Vending Machine
+        paymentManager.addNotes(Map.of(
+                Note.ONE, 20,
+                Note.FIVE, 20,
+                Note.TEN, 20,
+                Note.FIFTY, 20,
+                Note.HUNDRED, 20));
 
         // Add products to the inventory
         Product coke = new Product("Coke", 15);
@@ -20,19 +30,19 @@ public class VendingMachineDemo {
         vendingMachine.getInventory().addProduct(water, 2, 5);
 
         // Select a product
-        vendingMachine.getState().selectProduct(5);
+        vendingMachine.getState().selectProduct(List.of(5, 2));
 
         // Insert a note
-        vendingMachine.getState().insertNote(List.of(Note.TEN, Note.TWENTY));
-
-        // Dispense the product
-        vendingMachine.getState().dispenseProduct();
+        vendingMachine.getState().insertNote(List.of(Note.FIFTY, Note.TWENTY));
 
         // Return change
         vendingMachine.getState().returnChange();
 
+        // Dispense the product
+        vendingMachine.getState().dispenseProduct();
+
         // Select another product
-        vendingMachine.getState().selectProduct(3);
+        vendingMachine.getState().selectProduct(List.of(3));
 
         // Insert insufficient payment
         vendingMachine.getState().insertNote(List.of(Note.TEN));
@@ -43,10 +53,10 @@ public class VendingMachineDemo {
         // Add more money
         vendingMachine.getState().insertNote(List.of(Note.FIVE));
 
-        // Dispense the product
-        vendingMachine.getState().dispenseProduct();
-
         // Return change
         vendingMachine.getState().returnChange();
+
+        // Dispense the product
+        vendingMachine.getState().dispenseProduct();
     }
 }
