@@ -1,9 +1,9 @@
-package states;
+package service.states;
 
 import enums.Note;
 import models.VendingMachine;
 
-import java.util.List;
+import java.util.*;
 
 public class PaymentState implements VendingMachineState{
 
@@ -14,22 +14,22 @@ public class PaymentState implements VendingMachineState{
     }
 
     @Override
-    public void selectProduct(int productCode) throws Exception {
+    public void selectProduct(List<Integer> selectedProducts) {
         System.out.println("Please make the payment for selected product");
     }
 
     @Override
-    public void insertNote(List<Note> notes) throws Exception {
-        vendingMachine.addNotes(notes);
+    public void insertNote(List<Note> notes) {
         int totalAmount = 0;
-        for(Note note : this.vendingMachine.getNotes().keySet()) totalAmount += (note.getValue() * this.vendingMachine.getNotes().get(note));
-        boolean isPaymentSuccess = checkPaymentStatus(totalAmount);
+        for(Note note : notes) totalAmount += note.getValue();
 
-        if(isPaymentSuccess) {
-            vendingMachine.setTotalAmount(totalAmount);
-            vendingMachine.setState(new DispenseState(vendingMachine));
+        vendingMachine.setProvidedAmount(totalAmount);
+
+        if(checkIfSufficientAmount(vendingMachine.getProvidedAmount())) {
+            vendingMachine.getPaymentManager().receivePayment(notes);
+            vendingMachine.setState(new CollectChangeState(vendingMachine));
         } else {
-            System.out.println("Amount is not enough please insert more money");
+            System.out.println("Amount is not enough please insert remaining amount : " + (vendingMachine.getTotalBillAmount() - totalAmount));
             vendingMachine.setState(new PaymentState(vendingMachine));
         }
     }
@@ -40,12 +40,12 @@ public class PaymentState implements VendingMachineState{
     }
 
     @Override
-    public void returnChange() {
+    public Map<Note, Integer> returnChange() {
         System.out.println("Please make the payment first");
+        return Collections.EMPTY_MAP;
     }
 
-    private boolean checkPaymentStatus(int amount) throws Exception {
-        int productCode = this.vendingMachine.getProductCode();
-        return amount >= this.vendingMachine.getInventory().getProduct(productCode).getPrice();
+    private boolean checkIfSufficientAmount(int amount) {
+        return amount >= this.vendingMachine.getTotalBillAmount();
     }
 }

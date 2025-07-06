@@ -1,13 +1,13 @@
-package states;
+package service.states;
 
 import enums.Note;
-import models.Product;
 
 import java.util.List;
+import java.util.Map;
 
 public interface VendingMachineState {
-    void selectProduct(int productCode) throws Exception;
-    void insertNote(List<Note> notes) throws Exception;
+    void selectProduct(List<Integer> selectedProducts);
+    void insertNote(List<Note> notes);
+    Map<Note, Integer> returnChange();
     void dispenseProduct();
-    void returnChange() throws Exception;
 }

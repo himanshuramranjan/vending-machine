@@ -1,9 +1,11 @@
-package states;
+package service.states;
 
 import enums.Note;
 import models.VendingMachine;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DispenseState implements VendingMachineState {
 
@@ -12,7 +14,7 @@ public class DispenseState implements VendingMachineState {
         this.vendingMachine = vendingMachine;
     }
     @Override
-    public void selectProduct(int productCode) throws Exception {
+    public void selectProduct(List<Integer> selectedProducts) {
         System.out.println("Product already selected. Please collect the dispensed product.");
     }
 
@@ -23,14 +25,15 @@ public class DispenseState implements VendingMachineState {
 
     @Override
     public void dispenseProduct() {
-        System.out.println("Please collect your product from the bottom slot");
-        int shelfCode = this.vendingMachine.getProductCode();
-        this.vendingMachine.getInventory().dispenseProduct(shelfCode);
-        this.vendingMachine.setState(new CollectChangeState(vendingMachine));
+        this.vendingMachine.getInventory().dispenseProducts(vendingMachine.getSelectedProducts());
+        this.vendingMachine.resetVendingMachine();
+
+        System.out.println("Please collect your product(s) from the bottom slot");
+        this.vendingMachine.setState(new IdleState(vendingMachine));
     }
 
     @Override
-    public void returnChange() {
-
+    public Map<Note, Integer> returnChange() {
+        return Collections.EMPTY_MAP;
     }
 }

@@ -1,10 +1,11 @@
-package states;
+package service.states;
 
 import enums.Note;
-import models.Product;
 import models.VendingMachine;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class IdleState implements VendingMachineState {
 
@@ -15,9 +16,15 @@ public class IdleState implements VendingMachineState {
     }
 
     @Override
-    public void selectProduct(int productCode) throws Exception {
-        vendingMachine.setProductCode(productCode);
-        vendingMachine.setState(new PaymentState(vendingMachine));
+    public void selectProduct(List<Integer> selectedProducts) {
+        try {
+            vendingMachine.setSelectedProducts(selectedProducts);
+            vendingMachine.setState(new PaymentState(vendingMachine));
+        } catch (Exception e) {
+            System.out.println("Exception occured : " + e.getMessage());
+            vendingMachine.resetVendingMachine();
+            vendingMachine.setState(new IdleState(vendingMachine));
+        }
     }
 
     @Override
@@ -31,7 +38,8 @@ public class IdleState implements VendingMachineState {
     }
 
     @Override
-    public void returnChange() {
+    public Map<Note, Integer> returnChange() {
         System.out.println("Please select the product first");
+        return Collections.EMPTY_MAP;
     }
 }
