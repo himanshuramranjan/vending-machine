@@ -1,0 +1,115 @@
++----------------------+
+|  VendingMachineDemo  |
++----------------------+
+| + main(String[])     |
++----------------------+
+           |
+           v
++----------------------+
+|     VendingMachine   |
++----------------------+
+| - state: VendingMachineState      |
+| - inventory: Inventory            |
+| - cashManager: CashManager        |
+| - productCode: int                |
+| - totalAmount: int                |
++----------------------+
+| + getInstance(): VendingMachine   |
+| + getState(): VendingMachineState |
+| + setState(state): void           |
+| + getInventory(): Inventory       |
+| + addNotes(notes): void           |
+| + resetVendingMachine(): void     |
+| + getProductCode(): int           |
+| + setProductCode(code): void      |
+| + getTotalAmount(): int           |  -----------------------------
+| + setTotalAmount(amount): void    |                              |
+| + getNotes(): Map<Note, Integer>  |                              |
++----------------------+                                           V
+                                                        +---------------------------------------+
+                |                                        |              CashManager             |
+                |                                        +--------------------------------------+
+                |                                        | - cashBox: Map<Note, Integer>        |
+                |                                        +---------------------------------------+
+                |                                        | + addNotes(List<Note>)               |
+                |                                        | + getTotalInsertedAmount(List<Note>) |
+                |                                        | + hasSufficientChange(int): boolean  |
+                |                                        | + getChange(int): Map<Note, Integer> |
+                |                                        | + reset()                            |
+                |                                        | + getCashBox(): Map<Note, Integer>   |
+                |                                        +-------------------------------------+
+                |
+                |
+                V
++--------------------------+
+|  VendingMachineState     |<-------------------------+
++--------------------------+                          |
+| + selectProduct(int)     |                          |
+| + insertNote(List<Note>) |                          |
+| + dispenseProduct()      |                          |
+| + returnChange()         |                          |
++--------------------------+                          |
+           ^                                         (implements)
+           |                                          |
+   +------------------------+   +------------------+  +----------------------+
+   |      IdleState         |   |  PaymentState    |  |   DispenseState      |
+   +------------------------+   +------------------+  +----------------------+
+   | + selectProduct(...)    |  | + insertNote(...)|  | + dispenseProduct()  |
+   | + insertNote(...)       |  | + selectProduct()|  | + selectProduct()    |
+   | + dispenseProduct()     |  | + dispenseProduct|  | + insertNote()       |
+   | + returnChange()        |  | + returnChange() |  | + returnChange()     |
+   +------------------------+   +------------------+  +----------------------+
+                                                           |
+                                                           v
+                                               +--------------------------+
+                                               |   CollectChangeState     |
+                                               +--------------------------+
+                                               | + returnChange()         |
+                                               | + selectProduct()        |
+                                               | + insertNote()           |
+                                               | + dispenseProduct()      |
+                                               +--------------------------+
+
++-------------------+             +----------------------+
+|     Inventory     |<------------|   VendingMachine      |
++-------------------+             +----------------------+
+| - shelves: Map<int, ProductShelf>         |
+| + getInstance(): Inventory                |
+| + addProduct(prod, code, qty): void       |
+| + getProduct(code): Product               |
+| + refillProduct(code, qty): void          |
+| + dispenseProduct(code): void             |
++-------------------+
+           |
+           v
++----------------------+
+|    ProductShelf      |
++----------------------+
+| - code: int          |
+| - product: Product   |
+| - quantity: int      |
++----------------------+
+| + getCode(): int     |
+| + getProduct(): Product |
+| + setProduct(Product)|
+| + getQuantity(): int |
+| + setQuantity(int)   |
++----------------------+
+
++----------------------+
+|       Product        |
++----------------------+
+| - name: String       |
+| - price: int         |
++----------------------+
+| + getName(): String  |
+| + setPrice(int)      |
+| + getPrice(): int    |
++----------------------+
+
++----------------------+
+|        Note          |
++----------------------+
+| enum: FIVE, TEN, etc.|
+| + getValue(): int    |
++----------------------+

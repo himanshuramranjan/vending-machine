@@ -1,0 +1,8 @@
+> What feature can be added / modified
+
+A new state can be introduced if user want to cancel the transaction in between
+currently we are handling some exceptional cases (like insufficient change amount)
+through setting the new state to idle state.
+
+
+> More logs can be added for visualization of the flow
