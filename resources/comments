@@ -6,3 +6,32 @@ through setting the new state to idle state.
 
 
 > More logs can be added for visualization of the flow
+
+> Why the totalBillAmount and providedAmount is in vending Machine
+
+For simulating a single vending machine we have kept these fields inside VendingMachine,
+otherwise it would be better to have a TransactionContext class to handle these data and logic
+
+Possible implementation :
+
+public class TransactionContext {
+    private int selectedProductCode;
+    private final List<Note> insertedNotes = new ArrayList<>();
+    private int totalInsertedAmount = 0;
+
+    public void addNotes(List<Note> notes) {
+        insertedNotes.addAll(notes);
+        totalInsertedAmount += notes.stream().mapToInt(Note::getValue).sum();
+    }
+
+    public int getSelectedProductCode() { return selectedProductCode; }
+    public void setSelectedProductCode(int code) { this.selectedProductCode = code; }
+
+    public int getTotalInsertedAmount() { return totalInsertedAmount; }
+
+    public void reset() {
+        selectedProductCode = -1;
+        insertedNotes.clear();
+        totalInsertedAmount = 0;
+    }
+}
