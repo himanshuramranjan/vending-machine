@@ -1,32 +1,27 @@
 package service;
 
 import enums.Note;
-import models.Inventory;
-import models.VendingMachine;
-import service.states.IdleState;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PaymentManager {
 
     private final Map<Note, Integer> cashBox;
     private int totalAmount;
-    public static volatile PaymentManager paymentManager;
 
     private PaymentManager() {
-        cashBox = new HashMap<>();
+        cashBox = new ConcurrentHashMap<>();
         totalAmount = 0;
     }
 
+    private static class PaymentManagerHelper {
+        private static final PaymentManager INSTANCE = new PaymentManager();
+    }
+
+
     public static PaymentManager getInstance() {
-        if(paymentManager == null) {
-            synchronized (VendingMachine.class) {
-                if(paymentManager == null) {
-                    paymentManager = new PaymentManager();
-                }
-            }
-        }
-        return paymentManager;
+        return PaymentManagerHelper.INSTANCE;
     }
 
     public void receivePayment(List<Note> insertedNotes) {

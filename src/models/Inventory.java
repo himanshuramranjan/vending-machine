@@ -7,21 +7,27 @@ import java.util.List;
 import java.util.Map;
 public class Inventory {
 
-    public static volatile Inventory inventory;
-
     private Inventory() {this.shelves = new HashMap<>(); }
     Map<Integer, ProductShelf> shelves;
 
-    public static Inventory getInstance() {
-        if(inventory == null) {
-            synchronized (Inventory.class) {
-                if (inventory == null) {
-                    inventory = new Inventory();
-                }
-            }
-        }
-        return inventory;
+    private static class InventoryHelper {
+        private static final Inventory INSTANCE = new Inventory();
     }
+
+    public static Inventory getInstance() {
+        return InventoryHelper.INSTANCE;
+    }
+
+//    public static Inventory getInstance() {
+//        if(inventory == null) {
+//            synchronized (Inventory.class) {
+//                if (inventory == null) {
+//                    inventory = new Inventory();
+//                }
+//            }
+//        }
+//        return inventory;
+//    }
 
     public void refillProduct(int shelfCode, int quantity) throws ProductNotFoundException {
         if(!shelves.containsKey(shelfCode)) {

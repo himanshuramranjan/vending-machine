@@ -9,8 +9,6 @@ import java.util.List;
 
 public class VendingMachine {
 
-    public static volatile VendingMachine vendingMachine;
-
     private VendingMachineState state;
     private final Inventory inventory;
     private final PaymentManager paymentManager;
@@ -44,19 +42,12 @@ public class VendingMachine {
         calculateTotalAmount();
     }
 
-    public static VendingMachine getInstance() {
-        if(vendingMachine == null) {
-            synchronized (VendingMachine.class) {
-                if(vendingMachine == null) {
-                    vendingMachine = new VendingMachine();
-                }
-            }
-        }
-        return vendingMachine;
+    private static class VendingMachineHelper {
+        private static final VendingMachine INSTANCE = new VendingMachine();
     }
 
-    public static VendingMachine getVendingMachine() {
-        return vendingMachine;
+    public static VendingMachine getInstance() {
+        return VendingMachineHelper.INSTANCE;
     }
 
     public Inventory getInventory() {
